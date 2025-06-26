@@ -34,6 +34,8 @@ ebot = EchoBot()
 
 @app.route("/api/messages", methods=["POST"])
 def messages():
+    logger.info(f"Headers: {dict(request.headers)}")
+    logger.info(f"Raw body: {request.data}")
     if "application/json" in request.headers.get("content-type", ""):
         jsonmessage = request.json
         logger.info(f"Received JSON message: {jsonmessage}")
