@@ -1,3 +1,0 @@
-flask==2.3.3
-botbuilder-core==4.15.0
-botbuilder-schema==4.15.0
