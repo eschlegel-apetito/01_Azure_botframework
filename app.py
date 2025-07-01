@@ -18,10 +18,9 @@ logger.info("Starting Flask app...")
 try:
     logger.info("Initializing BotFrameworkAdapterSettings...")
     # Für Azure Deployment: App ID und App Password aus Umgebungsvariablen lesen
-    # app_id = os.environ.get("MicrosoftAppId", "")
-    # app_password = os.environ.get("MicrosoftAppPassword", "")
-    # Bot ohne Authentifizierung (für lokale/öffentliche Tests)
-    botadapter_settings = BotFrameworkAdapterSettings("", "")
+    app_id = os.environ.get("MicrosoftAppId", "")
+    app_password = os.environ.get("MicrosoftAppPassword", "")
+    botadapter_settings = BotFrameworkAdapterSettings(app_id, app_password)
     logger.info("BotFrameworkAdapterSettings initialized successfully.")
 except Exception as e:
     logger.error(f"Error initializing BotFrameworkAdapterSettings: {e}")
