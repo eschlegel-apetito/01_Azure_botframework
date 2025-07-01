@@ -14,4 +14,13 @@ class EchoBot(ActivityHandler):
                 
     async def on_message_activity(self, turn_context):
         logger.info(f"Received message: {turn_context.activity.text}")
-        await turn_context.send_activity("Echo: "+turn_context.activity.text)
+        if turn_context.activity.text:
+            await turn_context.send_activity("Echo: " + turn_context.activity.text)
+        elif turn_context.activity.attachments:
+            for attachment in turn_context.activity.attachments:
+                if attachment.content_type == "audio/ogg":
+                    await turn_context.send_activity("Sprachnachricht empfangen! (audio/ogg)")
+                else:
+                    await turn_context.send_activity(f"Attachment empfangen: {attachment.content_type}")
+        else:
+            await turn_context.send_activity("Nachricht ohne Text oder Anhang empfangen.")
