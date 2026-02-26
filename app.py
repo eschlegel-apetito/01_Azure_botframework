@@ -1,6 +1,7 @@
 from flask import Flask, request, Response
 from botbuilder.schema import Activity
 from botbuilder.core import BotFrameworkAdapter, BotFrameworkAdapterSettings
+from botframework.connector.auth import AuthenticationConfiguration
 import asyncio
 import os
 
@@ -20,7 +21,9 @@ try:
     # Für Azure Deployment: App ID und App Password aus Umgebungsvariablen lesen
     app_id = os.environ.get("MicrosoftAppId", "")
     app_password = os.environ.get("MicrosoftAppPassword", "")
-    botadapter_settings = BotFrameworkAdapterSettings(app_id, app_password)
+    tenantId= os.environ.get("TenantId", "")
+    AUTH_CONFIG = AuthenticationConfiguration(tenant_id=tenantId)
+    botadapter_settings = BotFrameworkAdapterSettings(app_id=app_id, app_password=app_password, auth_configuration=AUTH_CONFIG)
     logger.info("BotFrameworkAdapterSettings initialized successfully.")
 except Exception as e:
     logger.error(f"Error initializing BotFrameworkAdapterSettings: {e}")
