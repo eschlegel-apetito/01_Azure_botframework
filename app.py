@@ -1,7 +1,7 @@
 from flask import Flask, request, Response
 from botbuilder.schema import Activity
 from botbuilder.core import BotFrameworkAdapter, BotFrameworkAdapterSettings
-from botframework.connector.auth import AuthenticationConfiguration, SimpleChannelProvider
+from botframework.connector.auth import AuthenticationConfiguration
 import asyncio
 import os
 
@@ -23,15 +23,10 @@ try:
     app_password = os.environ.get("MicrosoftAppPassword", "")
     tenantId= os.environ.get("TenantId", "")
     
-    # Channel Service für Sweden Central Region
-    channel_service = "https://swedencentral.api.botframework.com"
-    channel_provider = SimpleChannelProvider(channel_service=channel_service)
-    
     AUTH_CONFIG = AuthenticationConfiguration(tenant_id=tenantId)
     botadapter_settings = BotFrameworkAdapterSettings(
         app_id=app_id, 
         app_password=app_password, 
-        channel_provider=channel_provider,
         auth_configuration=AUTH_CONFIG
     )
     logger.info("BotFrameworkAdapterSettings initialized successfully.")
