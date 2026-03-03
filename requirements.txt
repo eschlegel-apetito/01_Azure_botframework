@@ -1,6 +1,6 @@
 flask==2.3.3
-botbuilder-core==4.15.0
-botbuilder-schema==4.15.0
-botframework-connector==4.15.0
+botbuilder-core==4.14.8
+botbuilder-schema==4.14.8
+botframework-connector==4.14.8
 aiohttp==3.8.4
 azure-identity==1.15.0
