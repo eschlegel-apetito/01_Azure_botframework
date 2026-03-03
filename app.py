@@ -1,7 +1,12 @@
 from flask import Flask, request, Response
 from botbuilder.schema import Activity
 from botbuilder.core import BotFrameworkAdapter, BotFrameworkAdapterSettings
-from botframework.connector.auth import AuthenticationConfiguration
+from botframework.connector.auth import (
+    AuthenticationConfiguration, 
+    MicrosoftAppCredentials,
+    SimpleCredentialProvider
+)
+from azure.identity import ManagedIdentityCredential, DefaultAzureCredential
 import asyncio
 import os
 
@@ -20,14 +25,26 @@ try:
     logger.info("Initializing BotFrameworkAdapterSettings...")
     # Für Azure Deployment: App ID und App Password aus Umgebungsvariablen lesen
     app_id = os.environ.get("MicrosoftAppId", "")
-    app_password = os.environ.get("MicrosoftAppPassword", "")
-    tenantId= os.environ.get("TenantId", "")
+    app_type = os.environ.get("MicrosoftAppType", "")
+    tenant_id = os.environ.get("MicrosoftAppTenantId", "")
     
-    AUTH_CONFIG = AuthenticationConfiguration(tenant_id=tenantId)
+    logger.info(f"App Type: {app_type}, App ID: {app_id}")
+    logger.info(f"Tenant ID: {tenant_id}")
+    
+    # Bei Managed Identity kein Password verwenden
+    if app_type in ["UserAssignedMSI", "ManagedIdentity"]:
+        logger.info("Using Managed Identity authentication - setting empty password")
+        app_password = ""
+    else:
+        app_password = os.environ.get("MicrosoftAppPassword", "")
+    
+    # Credential Provider für Managed Identity
+    credential_provider = SimpleCredentialProvider(app_id, app_password)
+    
     botadapter_settings = BotFrameworkAdapterSettings(
         app_id=app_id, 
-        app_password=app_password, 
-        auth_configuration=AUTH_CONFIG
+        app_password=app_password,
+        credential_provider=credential_provider
     )
     logger.info("BotFrameworkAdapterSettings initialized successfully.")
 except Exception as e:
@@ -69,5 +86,9 @@ def messages():
 
 if __name__ == "__main__":
     # Für lokale Entwicklung
+    port = int(os.environ.get("PORT", 3978))
+    app.run(host="0.0.0.0", port=port)
+
+if __name__ == "__main__":
     port = int(os.environ.get("PORT", 3978))
     app.run(host="0.0.0.0", port=port)
